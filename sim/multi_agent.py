@@ -37,6 +37,7 @@ NN_MODEL = None
 v_chunk_weights = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 2, 2, 2, 2,
                    2]  # make it as 49 long to fit original setting
 
+
 def testing(epoch, nn_model, log_file):
     # clean up the test results folder
     os.system('rm -r ' + TEST_LOG_FOLDER)
