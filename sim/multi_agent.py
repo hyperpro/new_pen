@@ -9,9 +9,10 @@ import env
 import a3c
 import load_trace
 
-S_INFO = 6  # bit_rate, buffer_size, next_chunk_size, bandwidth_measurement(throughput and time), chunk_til_video_end
+#S_INFO = 6  # bit_rate, buffer_size, next_chunk_size, bandwidth_measurement(throughput and time), chunk_til_video_end
+S_INFO = 8  # plus two more dim, current weight and future chunk weights
 S_LEN = 8  # take how many frames in the past
-A_DIM = 6
+A_DIM = 6 # DIM of the action space
 ACTOR_LR_RATE = 0.0001
 CRITIC_LR_RATE = 0.001
 NUM_AGENTS = 16
@@ -243,12 +244,16 @@ def agent(agent_id, all_cooked_time, all_cooked_bw, net_params_queue, exp_queue)
             time_stamp += delay  # in ms
             time_stamp += sleep_time  # in ms
 
+            this_chunk_weight = v_chunk_weights[len(v_chunk_weights) - video_chunk_remain - 1]
+
             # -- linear reward --
             # reward is video quality - rebuffer penalty - smoothness
             reward = VIDEO_BIT_RATE[bit_rate] / M_IN_K \
                      - REBUF_PENALTY * rebuf \
                      - SMOOTH_PENALTY * np.abs(VIDEO_BIT_RATE[bit_rate] -
                                                VIDEO_BIT_RATE[last_bit_rate]) / M_IN_K
+
+            reward = this_chunk_weight * reward
 
             # -- log scale reward --
             # log_bit_rate = np.log(VIDEO_BIT_RATE[bit_rate] / float(VIDEO_BIT_RATE[-1]))
