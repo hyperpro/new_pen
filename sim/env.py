@@ -23,6 +23,12 @@ class Environment:
 
         np.random.seed(random_seed)
 
+
+        self.weights = np.array([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 2, 2, 2,
+                   2])  # make it as 49 long to fit original setting (make it the same as in multi_agent.py)
+
+        self.weights = self.weights / np.mean(self.weights) # normalized weights, make sure the final reward be comparable) , it is a hard-coded weights (you can change it later)
+
         self.all_cooked_time = all_cooked_time
         self.all_cooked_bw = all_cooked_bw
 
@@ -135,6 +141,12 @@ class Environment:
 
         self.video_chunk_counter += 1
         video_chunk_remain = TOTAL_VIDEO_CHUNCK - self.video_chunk_counter
+
+        # weight for this_chunk
+        this_chunk_weight = self.weights[self.video_chunk_counter - 1]
+
+        # weights for next_chunks
+        future_weights = self.weights[self.video_chunk_counter:self.video_chunk_counter + ralkjsfesfeasdf]
 
         end_of_video = False
         if self.video_chunk_counter >= TOTAL_VIDEO_CHUNCK:
