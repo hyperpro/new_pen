@@ -17,7 +17,7 @@ NOISE_LOW = 0.9
 NOISE_HIGH = 1.1
 VIDEO_SIZE_FILE = './video_size_'
 
-FUTURE_CHUNK_NUM = 8
+FUTURE_CHUNK_NUM = 6
 
 
 class Environment:

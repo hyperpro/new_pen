@@ -28,7 +28,7 @@ TEST_TRACES = './cooked_test_traces/'
 # log in format of time_stamp bit_rate buffer_size rebuffer_time chunk_size download_time reward
 NN_MODEL = sys.argv[1]
 
-FUTURE_CHUNK_NUM = 8
+FUTURE_CHUNK_NUM = 6
 
 
 def main():

@@ -35,7 +35,7 @@ TRAIN_TRACES = './cooked_traces/'
 # NN_MODEL = './results/pretrain_linear_reward.ckpt'
 NN_MODEL = None
 
-FUTURE_CHUNK_NUM = 8
+FUTURE_CHUNK_NUM = 6
 
 def testing(epoch, nn_model, log_file):
     # clean up the test results folder
