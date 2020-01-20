@@ -152,9 +152,9 @@ class Environment:
 
         # weights for next_chunks
         next_chunk_weights = copy.deepcopy(
-            self.weights[self.video_chunk_counter + 1:self.video_chunk_counter + 1 + FUTURE_CHUNK_SIZE])
-        if len(next_chunk_weights)<FUTURE_CHUNK_SIZE:
-            fill_out_number = FUTURE_CHUNK_SIZE - len(next_chunk_weights)
+            self.weights[self.video_chunk_counter + 1:self.video_chunk_counter + 1 + FUTURE_CHUNK_NUM])
+        if len(next_chunk_weights)<FUTURE_CHUNK_NUM:
+            fill_out_number = FUTURE_CHUNK_NUM - len(next_chunk_weights)
             for t_counter in range(0, fill_out_number):
                 next_chunk_weights.append(0)
 
