@@ -9,10 +9,9 @@ import a3c
 import fixed_env as env
 
 #S_INFO = 6  # bit_rate, buffer_size, next_chunk_size, bandwidth_measurement(throughput and time), chunk_til_video_end
-S_INFO = 8 # we have extend the original,
-S_FUTURE_CHUNK = 5 # look at future 8 video segments
+S_INFO = 8 # plus this chunk's size and future chunk's weights
 S_LEN = 8  # take how many frames in the past
-A_DIM = 6  # action DIM (keep it just for now)
+A_DIM = 6  # action DIM (keep it just for now) in the future will plus buffer events
 ACTOR_LR_RATE = 0.0001
 CRITIC_LR_RATE = 0.001
 VIDEO_BIT_RATE = [300, 750, 1200, 1850, 2850, 4300]  # Kbps
@@ -29,10 +28,8 @@ TEST_TRACES = './cooked_test_traces/'
 # log in format of time_stamp bit_rate buffer_size rebuffer_time chunk_size download_time reward
 NN_MODEL = sys.argv[1]
 
-v_chunk_weights = np.array([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 2, 2, 2,
-                   2])  # make it as 49 long to fit original setting (make it the same as in multi_agent.py)
+FUTURE_CHUNK_NUM = 8
 
-v_chunk_weights = v_chunk_weights / np.mean(v_chunk_weights) # normalized weights, make sure the final reward be comparable
 
 def main():
     np.random.seed(RANDOM_SEED)
@@ -85,13 +82,11 @@ def main():
             # this is to make the framework similar to the real
             delay, sleep_time, buffer_size, rebuf, \
             video_chunk_size, next_video_chunk_sizes, \
-            end_of_video, video_chunk_remain = \
+            end_of_video, video_chunk_remain, this_chunk_weight, next_chunk_weights = \
                 net_env.get_video_chunk(bit_rate)
 
             time_stamp += delay  # in ms
             time_stamp += sleep_time  # in ms
-
-            this_chunk_weight = v_chunk_weights[len(v_chunk_weights) - video_chunk_remain - 1]
 
             # reward is video quality - rebuffer penalty - smoothness / felslkjfe
             reward = VIDEO_BIT_RATE[bit_rate] / M_IN_K \
@@ -131,8 +126,7 @@ def main():
             state[4, :A_DIM] = np.array(next_video_chunk_sizes) / M_IN_K / M_IN_K  # mega byte
             state[5, -1] = np.minimum(video_chunk_remain, CHUNK_TIL_VIDEO_END_CAP) / float(CHUNK_TIL_VIDEO_END_CAP) # num of chunks left
             state[6, -1] = this_chunk_weight
-            state[7, :S_FUTURE_CHUNK] = this_chunk_weight[len(v_chunk_weights) - video_chunk_remain:]
-
+            state[7, :FUTURE_CHUNK_NUM] = next_chunk_weights
 
             action_prob = actor.predict(np.reshape(state, (1, S_INFO, S_LEN)))
             action_cumsum = np.cumsum(action_prob)

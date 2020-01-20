@@ -35,9 +35,7 @@ TRAIN_TRACES = './cooked_traces/'
 # NN_MODEL = './results/pretrain_linear_reward.ckpt'
 NN_MODEL = None
 
-v_chunk_weights = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 2, 2, 2, 2,
-                   2]  # make it as 49 long to fit original setting
-
+FUTURE_CHUNK_NUM = 8
 
 def testing(epoch, nn_model, log_file):
     # clean up the test results folder
@@ -89,7 +87,6 @@ def central_agent(net_params_queues, exp_queues):
                         level=logging.INFO)
 
     with tf.Session() as sess, open(LOG_FILE + '_test', 'wb') as test_log_file:
-
         actor = a3c.ActorNetwork(sess,
                                  state_dim=[S_INFO, S_LEN], action_dim=A_DIM,
                                  learning_rate=ACTOR_LR_RATE)
@@ -232,19 +229,17 @@ def agent(agent_id, all_cooked_time, all_cooked_bw, net_params_queue, exp_queue)
         entropy_record = []
 
         time_stamp = 0
-        while True:  # experience video streaming forever
 
+        while True:  # experience video streaming forever
             # the action is from the last decision
             # this is to make the framework similar to the real
             delay, sleep_time, buffer_size, rebuf, \
             video_chunk_size, next_video_chunk_sizes, \
-            end_of_video, video_chunk_remain = \
+            end_of_video, video_chunk_remain, this_chunk_weight, next_chunk_weights = \
                 net_env.get_video_chunk(bit_rate)
 
             time_stamp += delay  # in ms
             time_stamp += sleep_time  # in ms
-
-            this_chunk_weight = v_chunk_weights[len(v_chunk_weights) - video_chunk_remain - 1]
 
             # -- linear reward --
             # reward is video quality - rebuffer penalty - smoothness
@@ -288,6 +283,8 @@ def agent(agent_id, all_cooked_time, all_cooked_bw, net_params_queue, exp_queue)
             state[3, -1] = float(delay) / M_IN_K / BUFFER_NORM_FACTOR  # 10 sec
             state[4, :A_DIM] = np.array(next_video_chunk_sizes) / M_IN_K / M_IN_K  # mega byte
             state[5, -1] = np.minimum(video_chunk_remain, CHUNK_TIL_VIDEO_END_CAP) / float(CHUNK_TIL_VIDEO_END_CAP)
+            state[6, -1] = this_chunk_weight
+            state[7, :FUTURE_CHUNK_NUM] = next_chunk_weights
 
             # compute action probability vector
             action_prob = actor.predict(np.reshape(state, (1, S_INFO, S_LEN)))

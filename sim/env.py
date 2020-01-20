@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 MILLISECONDS_IN_SECOND = 1000.0
 B_IN_MB = 1000000.0
@@ -16,6 +17,8 @@ NOISE_LOW = 0.9
 NOISE_HIGH = 1.1
 VIDEO_SIZE_FILE = './video_size_'
 
+FUTURE_CHUNK_NUM = 8
+
 
 class Environment:
     def __init__(self, all_cooked_time, all_cooked_bw, random_seed=RANDOM_SEED):
@@ -23,11 +26,14 @@ class Environment:
 
         np.random.seed(random_seed)
 
+        # make it as 49 long to fit original setting (make it the same as in multi_agent.py) Please customized it.
+        self.weights = np.array(
+            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 2, 2, 2,
+             2])
 
-        self.weights = np.array([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 2, 2, 2,
-                   2])  # make it as 49 long to fit original setting (make it the same as in multi_agent.py)
-
-        self.weights = self.weights / np.mean(self.weights) # normalized weights, make sure the final reward be comparable) , it is a hard-coded weights (you can change it later)
+        # normalized weights, make sure the final reward be comparable) , it is a hard-coded weights (you can change it later)
+        self.weights = self.weights / np.mean(
+            self.weights)
 
         self.all_cooked_time = all_cooked_time
         self.all_cooked_bw = all_cooked_bw
@@ -58,26 +64,25 @@ class Environment:
         assert quality < BITRATE_LEVELS
 
         video_chunk_size = self.video_size[quality][self.video_chunk_counter]
-        
+
         # use the delivery opportunity in mahimahi
         delay = 0.0  # in ms
         video_chunk_counter_sent = 0  # in bytes
-        
+
         while True:  # download video chunk over mahimahi
             throughput = self.cooked_bw[self.mahimahi_ptr] \
                          * B_IN_MB / BITS_IN_BYTE
             duration = self.cooked_time[self.mahimahi_ptr] \
                        - self.last_mahimahi_time
-	    
+
             packet_payload = throughput * duration * PACKET_PAYLOAD_PORTION
 
             if video_chunk_counter_sent + packet_payload > video_chunk_size:
-
                 fractional_time = (video_chunk_size - video_chunk_counter_sent) / \
                                   throughput / PACKET_PAYLOAD_PORTION
                 delay += fractional_time
                 self.last_mahimahi_time += fractional_time
-                assert(self.last_mahimahi_time <= self.cooked_time[self.mahimahi_ptr])
+                assert (self.last_mahimahi_time <= self.cooked_time[self.mahimahi_ptr])
                 break
 
             video_chunk_counter_sent += packet_payload
@@ -94,8 +99,8 @@ class Environment:
         delay *= MILLISECONDS_IN_SECOND
         delay += LINK_RTT
 
-	# add a multiplicative noise to the delay
-	delay *= np.random.uniform(NOISE_LOW, NOISE_HIGH)
+        # add a multiplicative noise to the delay
+        delay *= np.random.uniform(NOISE_LOW, NOISE_HIGH)
 
         # rebuffer time
         rebuf = np.maximum(delay - self.buffer_size, 0.0)
@@ -146,7 +151,12 @@ class Environment:
         this_chunk_weight = self.weights[self.video_chunk_counter - 1]
 
         # weights for next_chunks
-        future_weights = self.weights[self.video_chunk_counter:self.video_chunk_counter + ralkjsfesfeasdf]
+        next_chunk_weights = copy.deepcopy(
+            self.weights[self.video_chunk_counter + 1:self.video_chunk_counter + 1 + FUTURE_CHUNK_SIZE])
+        if len(next_chunk_weights)<FUTURE_CHUNK_SIZE:
+            fill_out_number = FUTURE_CHUNK_SIZE - len(next_chunk_weights)
+            for t_counter in range(0, fill_out_number):
+                next_chunk_weights.append(0)
 
         end_of_video = False
         if self.video_chunk_counter >= TOTAL_VIDEO_CHUNCK:
@@ -169,10 +179,12 @@ class Environment:
             next_video_chunk_sizes.append(self.video_size[i][self.video_chunk_counter])
 
         return delay, \
-            sleep_time, \
-            return_buffer_size / MILLISECONDS_IN_SECOND, \
-            rebuf / MILLISECONDS_IN_SECOND, \
-            video_chunk_size, \
-            next_video_chunk_sizes, \
-            end_of_video, \
-            video_chunk_remain
+               sleep_time, \
+               return_buffer_size / MILLISECONDS_IN_SECOND, \
+               rebuf / MILLISECONDS_IN_SECOND, \
+               video_chunk_size, \
+               next_video_chunk_sizes, \
+               end_of_video, \
+               video_chunk_remain, \
+               this_chunk_weight, \
+               next_chunk_weights
