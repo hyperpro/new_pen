@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 MILLISECONDS_IN_SECOND = 1000.0
 B_IN_MB = 1000000.0
@@ -15,9 +16,21 @@ PACKET_SIZE = 1500  # bytes
 VIDEO_SIZE_FILE = './video_size_'
 
 
+FUTURE_CHUNK_NUM = 8
+
+
 class Environment:
     def __init__(self, all_cooked_time, all_cooked_bw, random_seed=RANDOM_SEED):
         assert len(all_cooked_time) == len(all_cooked_bw)
+
+        # make it as 49 long to fit original setting (make it the same as in multi_agent.py) Please customized it.
+        self.weights = np.array(
+            [3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3])
+
+        # normalized weights, make sure the final reward be comparable) , it is a hard-coded weights (you can change it later)
+        self.weights = self.weights / np.mean(
+            self.weights)
+
 
         np.random.seed(random_seed)
 
@@ -131,6 +144,17 @@ class Environment:
         self.video_chunk_counter += 1
         video_chunk_remain = TOTAL_VIDEO_CHUNCK - self.video_chunk_counter
 
+        # weight for this_chunk
+        this_chunk_weight = self.weights[self.video_chunk_counter - 1]
+
+        # weights for next_chunks
+        next_chunk_weights = copy.deepcopy(
+            self.weights[self.video_chunk_counter + 1:self.video_chunk_counter + 1 + FUTURE_CHUNK_NUM])
+        if len(next_chunk_weights)<FUTURE_CHUNK_NUM:
+            fill_out_number = FUTURE_CHUNK_NUM - len(next_chunk_weights)
+            for t_counter in range(0, fill_out_number):
+                next_chunk_weights = np.append(next_chunk_weights, 0)
+
         end_of_video = False
         if self.video_chunk_counter >= TOTAL_VIDEO_CHUNCK:
             end_of_video = True
@@ -160,4 +184,6 @@ class Environment:
             video_chunk_size, \
             next_video_chunk_sizes, \
             end_of_video, \
-            video_chunk_remain
+            video_chunk_remain, \
+            this_chunk_weight, \
+            next_chunk_weights
