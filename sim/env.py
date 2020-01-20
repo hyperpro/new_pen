@@ -156,7 +156,7 @@ class Environment:
         if len(next_chunk_weights)<FUTURE_CHUNK_NUM:
             fill_out_number = FUTURE_CHUNK_NUM - len(next_chunk_weights)
             for t_counter in range(0, fill_out_number):
-                next_chunk_weights.append(0)
+                next_chunk_weights = np.append(next_chunk_weights, 0)
 
         end_of_video = False
         if self.video_chunk_counter >= TOTAL_VIDEO_CHUNCK:
