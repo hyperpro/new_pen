@@ -15,7 +15,7 @@ As reported by the A3C paper (http://proceedings.mlr.press/v48/mniha16.pdf) and 
 
 The training process can be monitored in `sim/results/log_test` (validation) and `sim/results/log_central` (training). Tensorboard (https://www.tensorflow.org/get_started/summaries_and_tensorboard) is also used to visualize the training process, which can be invoked by running
 ```
-python -m tensorflow.tensorboard --logdir=./results/
+python -m tensorboard.main --logdir=./results/
 ```
 where the plot can be viewed at `localhost:6006` from a browser. 
 
