@@ -62,7 +62,21 @@ class ActorNetwork(object):
     def create_actor_network(self):
         with tf.variable_scope('actor'):
             inputs = tflearn.input_data(shape=[None, self.s_dim[0], self.s_dim[1]])
-            print('actor:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+            print('actorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',  inputs)
+
+
+
 
             split_0 = tflearn.fully_connected(inputs[:, 0:1, -1], 128, activation='relu')
             split_1 = tflearn.fully_connected(inputs[:, 1:2, -1], 128, activation='relu')
@@ -79,6 +93,7 @@ class ActorNetwork(object):
             split_4_flat = tflearn.flatten(split_4)
             split_7_flat = tflearn.flatten(split_7)
 
+            print('tttttttttttttttttttttttttestttttttttttttttttttttt', split_4_flat, split_4, split_7, split_7_flat)
             merge_net = tflearn.merge([split_0, split_1, split_2_flat, split_3_flat, split_4_flat, split_5, split_6, split_7_flat], 'concat')
 
             dense_net_0 = tflearn.fully_connected(merge_net, 128, activation='relu')
@@ -165,8 +180,13 @@ class CriticNetwork(object):
     def create_critic_network(self):
         with tf.variable_scope('critic'):
             inputs = tflearn.input_data(shape=[None, self.s_dim[0], self.s_dim[1]])
-
-            print('critic:',  inputs)
+            print('criticccccccccccccccccccccccccccccccccccccccccccccccccccc:',  inputs)
+            print('criticccccccccccccccccccccccccccccccccccccccccccccccccccc:',  inputs)
+            print('criticccccccccccccccccccccccccccccccccccccccccccccccccccc:',  inputs)
+            print('criticccccccccccccccccccccccccccccccccccccccccccccccccccc:',  inputs)
+            print('criticccccccccccccccccccccccccccccccccccccccccccccccccccc:',  inputs)
+            print('criticccccccccccccccccccccccccccccccccccccccccccccccccccc:',  inputs)
+            print('criticccccccccccccccccccccccccccccccccccccccccccccccccccc:',  inputs)
 
 
             split_0 = tflearn.fully_connected(inputs[:, 0:1, -1], 128, activation='relu')
