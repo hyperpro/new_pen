@@ -62,6 +62,7 @@ class ActorNetwork(object):
     def create_actor_network(self):
         with tf.variable_scope('actor'):
             inputs = tflearn.input_data(shape=[None, self.s_dim[0], self.s_dim[1]])
+            print(inputs)
 
             split_0 = tflearn.fully_connected(inputs[:, 0:1, -1], 128, activation='relu')
             split_1 = tflearn.fully_connected(inputs[:, 1:2, -1], 128, activation='relu')
@@ -69,6 +70,7 @@ class ActorNetwork(object):
             split_3 = tflearn.conv_1d(inputs[:, 3:4, :], 128, 4, activation='relu')
             split_4 = tflearn.conv_1d(inputs[:, 4:5, :A_DIM], 128, 4, activation='relu')
             split_5 = tflearn.fully_connected(inputs[:, 4:5, -1], 128, activation='relu')
+
             split_6 = tflearn.fully_connected(inputs[:, 5:6, -1], 128, activation='relu')
             split_7 = tflearn.conv_1d(inputs[:, 6:7, :FUTURE_CHUNK_NUM], 128, 4, activation='relu')
 
@@ -170,6 +172,8 @@ class CriticNetwork(object):
             split_3 = tflearn.conv_1d(inputs[:, 3:4, :], 128, 4, activation='relu')
             split_4 = tflearn.conv_1d(inputs[:, 4:5, :A_DIM], 128, 4, activation='relu')
             split_5 = tflearn.fully_connected(inputs[:, 4:5, -1], 128, activation='relu')
+
+
             split_6 = tflearn.fully_connected(inputs[:, 5:6, -1], 128, activation='relu')
             split_7 = tflearn.conv_1d(inputs[:, 6:7, :FUTURE_CHUNK_NUM], 128, 4, activation='relu')
 
