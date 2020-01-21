@@ -62,7 +62,7 @@ class ActorNetwork(object):
     def create_actor_network(self):
         with tf.variable_scope('actor'):
             inputs = tflearn.input_data(shape=[None, self.s_dim[0], self.s_dim[1]])
-            print(inputs)
+            print('actor:',  inputs)
 
             split_0 = tflearn.fully_connected(inputs[:, 0:1, -1], 128, activation='relu')
             split_1 = tflearn.fully_connected(inputs[:, 1:2, -1], 128, activation='relu')
@@ -165,6 +165,9 @@ class CriticNetwork(object):
     def create_critic_network(self):
         with tf.variable_scope('critic'):
             inputs = tflearn.input_data(shape=[None, self.s_dim[0], self.s_dim[1]])
+
+            print('critic:',  inputs)
+
 
             split_0 = tflearn.fully_connected(inputs[:, 0:1, -1], 128, activation='relu')
             split_1 = tflearn.fully_connected(inputs[:, 1:2, -1], 128, activation='relu')
