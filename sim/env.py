@@ -17,7 +17,13 @@ NOISE_LOW = 0.9
 NOISE_HIGH = 1.1
 VIDEO_SIZE_FILE = './video_size_'
 
-FUTURE_CHUNK_NUM = 8
+'''
+Xu modified
+'''
+FUTURE_CHUNK_NUM = 8 # how many future chunks do you look at
+'''
+Xu modified ends
+'''
 
 
 class Environment:
@@ -26,6 +32,9 @@ class Environment:
 
         np.random.seed(random_seed)
 
+        '''
+        Customized your weights here
+        '''
         # make it as 49 long to fit original setting (make it the same as in multi_agent.py) Please customized it.
         self.weights = np.array(
             [3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3])
@@ -33,6 +42,9 @@ class Environment:
         # normalized weights, make sure the final reward be comparable) , it is a hard-coded weights (you can change it later)
         self.weights = self.weights / np.mean(
             self.weights)
+        '''
+        Customized your weights here
+        '''
 
         self.all_cooked_time = all_cooked_time
         self.all_cooked_bw = all_cooked_bw
@@ -146,6 +158,9 @@ class Environment:
         self.video_chunk_counter += 1
         video_chunk_remain = TOTAL_VIDEO_CHUNCK - self.video_chunk_counter
 
+        '''
+        Xu modifed
+        '''
         # weight for this_chunk
         this_chunk_weight = self.weights[self.video_chunk_counter - 1]
 
@@ -156,6 +171,9 @@ class Environment:
             fill_out_number = FUTURE_CHUNK_NUM - len(next_chunk_weights)
             for t_counter in range(0, fill_out_number):
                 next_chunk_weights = np.append(next_chunk_weights, 0)
+        '''
+        Xu modified
+        '''
 
         end_of_video = False
         if self.video_chunk_counter >= TOTAL_VIDEO_CHUNCK:

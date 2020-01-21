@@ -9,7 +9,6 @@ import a3c
 import fixed_env as env
 
 #S_INFO = 6  # bit_rate, buffer_size, next_chunk_size, bandwidth_measurement(throughput and time), chunk_til_video_end
-S_INFO = 8 # plus this chunk's size and future chunk's weights
 S_LEN = 8  # take how many frames in the past
 A_DIM = 6  # action DIM (keep it just for now) in the future will plus buffer events
 ACTOR_LR_RATE = 0.0001
@@ -28,7 +27,15 @@ TEST_TRACES = './cooked_test_traces/'
 # log in format of time_stamp bit_rate buffer_size rebuffer_time chunk_size download_time reward
 NN_MODEL = sys.argv[1]
 
-FUTURE_CHUNK_NUM = 8
+'''
+Xu modified
+'''
+FUTURE_CHUNK_NUM = 8 # how many future chunks do you look at
+S_INFO = 8 # plus this chunk's size and future chunk's weights
+'''
+Xu modified
+'''
+
 
 
 def main():
@@ -125,8 +132,15 @@ def main():
             state[3, -1] = float(delay) / M_IN_K / BUFFER_NORM_FACTOR  # 10 sec
             state[4, :A_DIM] = np.array(next_video_chunk_sizes) / M_IN_K / M_IN_K  # mega byte
             state[5, -1] = np.minimum(video_chunk_remain, CHUNK_TIL_VIDEO_END_CAP) / float(CHUNK_TIL_VIDEO_END_CAP) # num of chunks left
+
+            '''
+            Xu added
+            '''
             state[6, -1] = this_chunk_weight
             state[7, :FUTURE_CHUNK_NUM] = next_chunk_weights
+            '''
+            Xu added
+            '''
 
             action_prob = actor.predict(np.reshape(state, (1, S_INFO, S_LEN)))
             action_cumsum = np.cumsum(action_prob)

@@ -20,3 +20,16 @@ python -m tensorboard.main --logdir=./results/
 where the plot can be viewed at `localhost:6006` from a browser. 
 
 Trained model will be saved in `sim/results/`. We provided a sample pretrained model with linear QoE as the reward signal. It can be loaded by setting `NN_MODEL = './results/pretrain_linear_reward.ckpt'` in `multi_agent.py`.
+
+# Customized your own codes
+
+## Modify your states
+
+Modify your related codes `multi_agent.py` around lines 293, `rl_test.py` around line 139.
+
+Accordingly, changes `S_INFO` and `FUTURE_CHUNK_NUM` in `multi_agent.py`, `rl_test.py`, `a3c.py`, `rl_test.py`, `env.py`, `fixed_env.py`.
+
+## Modify video weights
+
+Modify your video weight per chunk in `self.weights` in `env.py` and `fixed_env.py` 
+

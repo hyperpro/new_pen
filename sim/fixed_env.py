@@ -16,13 +16,16 @@ PACKET_SIZE = 1500  # bytes
 VIDEO_SIZE_FILE = './video_size_'
 
 
-FUTURE_CHUNK_NUM = 8
+FUTURE_CHUNK_NUM = 8 # how many future chunks do you look at
 
 
 class Environment:
     def __init__(self, all_cooked_time, all_cooked_bw, random_seed=RANDOM_SEED):
         assert len(all_cooked_time) == len(all_cooked_bw)
 
+        '''
+        Xu modified here
+        '''
         # make it as 49 long to fit original setting (make it the same as in multi_agent.py) Please customized it.
         self.weights = np.array(
             [3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3])
@@ -31,6 +34,9 @@ class Environment:
         self.weights = self.weights / np.mean(
             self.weights)
 
+        '''
+        Xu modified ends
+        '''
 
         np.random.seed(random_seed)
 
@@ -144,6 +150,9 @@ class Environment:
         self.video_chunk_counter += 1
         video_chunk_remain = TOTAL_VIDEO_CHUNCK - self.video_chunk_counter
 
+        '''
+        Xu modified
+        '''
         # weight for this_chunk
         this_chunk_weight = self.weights[self.video_chunk_counter - 1]
 
@@ -154,6 +163,9 @@ class Environment:
             fill_out_number = FUTURE_CHUNK_NUM - len(next_chunk_weights)
             for t_counter in range(0, fill_out_number):
                 next_chunk_weights = np.append(next_chunk_weights, 0)
+        '''
+        Xu modified ends
+        '''
 
         end_of_video = False
         if self.video_chunk_counter >= TOTAL_VIDEO_CHUNCK:
