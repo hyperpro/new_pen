@@ -1,2 +1,5 @@
 .idea
 .venv
+traces/train_sim_traces
+traces/test_sim_traces
+traces/cooked_traces
