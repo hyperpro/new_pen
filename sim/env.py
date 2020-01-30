@@ -36,8 +36,17 @@ class Environment:
         Customized your weights here
         '''
         # make it as 49 long to fit original setting (make it the same as in multi_agent.py) Please customized it.
+        # self.weights = np.array(
+        #     [3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3])
+
         self.weights = np.array(
-            [3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3])
+            [2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1,
+             1.2, 0.2,
+             9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5,
+             1.3, 2.1,
+             1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2, 0.2, 9.5, 1.3, 2.1, 1.2,
+             0.2, 9.5,
+             1.3, ])
 
         # normalized weights, make sure the final reward be comparable) , it is a hard-coded weights (you can change it later)
         self.weights = self.weights / np.mean(
