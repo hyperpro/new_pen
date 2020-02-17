@@ -20,7 +20,7 @@ VIDEO_SIZE_FILE = './video_size_'
 '''
 Xu modified
 '''
-FUTURE_CHUNK_NUM = 8 # how many future chunks do you look at
+FUTURE_CHUNK_NUM = 8  # how many future chunks do you look at
 '''
 Xu modified ends
 '''
@@ -39,7 +39,10 @@ class Environment:
         # self.weights = np.array(
         #     [3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3,3,1,7,2,3])
 
-        self.weights = np.array[3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13]
+        self.weights = np.array(
+            [3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73,
+             3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4,
+             2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13, 3.8, 2.51, 2.4, 2.73, 3.13])
         self.weights = self.weights - 1.5
 
         # normalized weights, make sure the final reward be comparable) , it is a hard-coded weights (you can change it later)
@@ -170,7 +173,7 @@ class Environment:
         # weights for next_chunks
         next_chunk_weights = copy.deepcopy(
             self.weights[self.video_chunk_counter + 1:self.video_chunk_counter + 1 + FUTURE_CHUNK_NUM])
-        if len(next_chunk_weights)<FUTURE_CHUNK_NUM:
+        if len(next_chunk_weights) < FUTURE_CHUNK_NUM:
             fill_out_number = FUTURE_CHUNK_NUM - len(next_chunk_weights)
             for t_counter in range(0, fill_out_number):
                 next_chunk_weights = np.append(next_chunk_weights, 0)
