@@ -34,7 +34,13 @@ TRAIN_TRACES = './cooked_traces/'
 # NN_MODEL = './results/pretrain_linear_reward.ckpt'
 NN_MODEL = None
 
+
 FUTURE_CHUNK_NUM = 8 # how many future chunks do you look at
+
+'''
+Xu modified
+'''
+
 S_INFO = 8  # plus two more dim, current weight and future chunk weights
 
 

@@ -2,13 +2,13 @@ import numpy as np
 import tensorflow as tf
 import tflearn
 
-
 GAMMA = 0.99
 A_DIM = 6
 ENTROPY_WEIGHT = 0.5
 ENTROPY_EPS = 1e-6
 S_INFO = 4
 
+FUTURE_CHUNK_NUM = 8 # how many future chunks do you look at
 
 class ActorNetwork(object):
     """
@@ -69,11 +69,29 @@ class ActorNetwork(object):
             split_4 = tflearn.conv_1d(inputs[:, 4:5, :A_DIM], 128, 4, activation='relu')
             split_5 = tflearn.fully_connected(inputs[:, 4:5, -1], 128, activation='relu')
 
+            '''
+            Xu added
+            '''
+            split_6 = tflearn.fully_connected(inputs[:, 6:7, -1], 128, activation='relu')
+            split_7 = tflearn.conv_1d(inputs[:, 7:8, :FUTURE_CHUNK_NUM], 128, 4, activation='relu')
+            '''
+            Xu added ends 
+            '''
+
             split_2_flat = tflearn.flatten(split_2)
             split_3_flat = tflearn.flatten(split_3)
+
             split_4_flat = tflearn.flatten(split_4)
 
-            merge_net = tflearn.merge([split_0, split_1, split_2_flat, split_3_flat, split_4_flat, split_5], 'concat')
+            '''
+            Xu modified
+            '''
+            split_7_flat = tflearn.flatten(split_7)
+
+            merge_net = tflearn.merge([split_0, split_1, split_2_flat, split_3_flat, split_4_flat, split_5, split_6, split_7_flat], 'concat')
+            '''
+            Xu modified ends
+            '''
 
             dense_net_0 = tflearn.fully_connected(merge_net, 128, activation='relu')
             out = tflearn.fully_connected(dense_net_0, self.a_dim, activation='softmax')
@@ -160,6 +178,7 @@ class CriticNetwork(object):
         with tf.variable_scope('critic'):
             inputs = tflearn.input_data(shape=[None, self.s_dim[0], self.s_dim[1]])
 
+
             split_0 = tflearn.fully_connected(inputs[:, 0:1, -1], 128, activation='relu')
             split_1 = tflearn.fully_connected(inputs[:, 1:2, -1], 128, activation='relu')
             split_2 = tflearn.conv_1d(inputs[:, 2:3, :], 128, 4, activation='relu')
@@ -167,11 +186,29 @@ class CriticNetwork(object):
             split_4 = tflearn.conv_1d(inputs[:, 4:5, :A_DIM], 128, 4, activation='relu')
             split_5 = tflearn.fully_connected(inputs[:, 4:5, -1], 128, activation='relu')
 
+            '''
+            Xu added
+            '''
+            split_6 = tflearn.fully_connected(inputs[:, 6:7, -1], 128, activation='relu')
+            split_7 = tflearn.conv_1d(inputs[:, 7:8, :FUTURE_CHUNK_NUM], 128, 4, activation='relu')
+            '''
+            Xu added ends
+            '''
+
+
             split_2_flat = tflearn.flatten(split_2)
             split_3_flat = tflearn.flatten(split_3)
             split_4_flat = tflearn.flatten(split_4)
 
-            merge_net = tflearn.merge([split_0, split_1, split_2_flat, split_3_flat, split_4_flat, split_5], 'concat')
+            '''
+            Xu modified
+            '''
+            split_7_flat = tflearn.flatten(split_7)
+
+            merge_net = tflearn.merge([split_0, split_1, split_2_flat, split_3_flat, split_4_flat, split_5, split_6, split_7_flat], 'concat')
+            '''
+            Xu modified ends
+            '''
 
             dense_net_0 = tflearn.fully_connected(merge_net, 128, activation='relu')
             out = tflearn.fully_connected(dense_net_0, 1, activation='linear')

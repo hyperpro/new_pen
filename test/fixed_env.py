@@ -1,7 +1,6 @@
 import numpy as np
 import copy
 
-
 MILLISECONDS_IN_SECOND = 1000.0
 B_IN_MB = 1000000.0
 BITS_IN_BYTE = 8.0
@@ -17,6 +16,7 @@ PACKET_SIZE = 1500  # bytes
 VIDEO_SIZE_FILE = './video_size_'
 
 FUTURE_CHUNK_NUM = 8  # how many future chunks do you look at
+
 
 class Environment:
     def __init__(self, all_cooked_time, all_cooked_bw, random_seed=RANDOM_SEED):
@@ -41,7 +41,6 @@ class Environment:
         '''
         Xu modified ends
         '''
-
 
         np.random.seed(random_seed)
 
@@ -89,7 +88,6 @@ class Environment:
             packet_payload = throughput * duration * PACKET_PAYLOAD_PORTION
 
             if video_chunk_counter_sent + packet_payload > video_chunk_size:
-
                 fractional_time = (video_chunk_size - video_chunk_counter_sent) / \
                                   throughput / PACKET_PAYLOAD_PORTION
                 delay += fractional_time
@@ -171,16 +169,16 @@ class Environment:
         '''
         Xu modified ends
         '''
-        
+
         end_of_video = False
         if self.video_chunk_counter >= TOTAL_VIDEO_CHUNCK:
             end_of_video = True
             self.buffer_size = 0
             self.video_chunk_counter = 0
-            
+
             self.trace_idx += 1
             if self.trace_idx >= len(self.all_cooked_time):
-                self.trace_idx = 0            
+                self.trace_idx = 0
 
             self.cooked_time = self.all_cooked_time[self.trace_idx]
             self.cooked_bw = self.all_cooked_bw[self.trace_idx]
@@ -195,13 +193,12 @@ class Environment:
             next_video_chunk_sizes.append(self.video_size[i][self.video_chunk_counter])
 
         return delay, \
-            sleep_time, \
-            return_buffer_size / MILLISECONDS_IN_SECOND, \
-            rebuf / MILLISECONDS_IN_SECOND, \
-            video_chunk_size, \
-            next_video_chunk_sizes, \
-            end_of_video, \
-            video_chunk_remain, \
-            this_chunk_weight, \
-            next_chunk_weights
-
+               sleep_time, \
+               return_buffer_size / MILLISECONDS_IN_SECOND, \
+               rebuf / MILLISECONDS_IN_SECOND, \
+               video_chunk_size, \
+               next_video_chunk_sizes, \
+               end_of_video, \
+               video_chunk_remain, \
+               this_chunk_weight, \
+               next_chunk_weights
