@@ -7,6 +7,7 @@ http://web.mit.edu/pensieve/
 ```
 python setup.py
 ```
+Note that, use python2 and tensorflow <=1.15
 
 ### Training
 - To train a new model, put training data in `sim/cooked_traces` and testing data in `sim/cooked_test_traces`, then in `sim/` run `python get_video_sizes.py` and then run
